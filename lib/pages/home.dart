@@ -1,3 +1,6 @@
+// import 'package:expense_tracker_app/components/expense_summary.dart';
+import 'package:expense_tracker_app/components/expense_summary.dart';
+import 'package:expense_tracker_app/components/expense_tile.dart';
 import 'package:expense_tracker_app/data/expense_data.dart';
 import 'package:expense_tracker_app/models/expense_model.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +40,7 @@ class _HomeState extends State<Home> {
           MaterialButton(
             onPressed: cancel,
             child: Text("Cancel"),
-          )
+          ),
         ],
       ),
     );
@@ -62,26 +65,29 @@ class _HomeState extends State<Home> {
     return Consumer<ExpenseData>(
       builder: (context, value, child) {
         return Scaffold(
-          backgroundColor: Colors.grey.shade300,
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blue,
-            onPressed: addnewExpenses,
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
-          body: ListView.builder(
-            itemCount: value.getallItenList().length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                value.getallItenList()[index].title,
+            backgroundColor: Colors.grey.shade300,
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.blue,
+              onPressed: addnewExpenses,
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
               ),
-              subtitle: Text(value.getallItenList()[index].dateTime.toString()),
-              trailing: Text('\$' + value.getallItenList()[index].amount),
             ),
-          ),
-        );
+            body: ListView(
+              children: [
+                ExpenseSummary(startofweek: value.startofWeekday()),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: value.getallItenList().length,
+                  itemBuilder: (context, index) => ExpenseTile(
+                      name: value.getallItenList()[index].title,
+                      amount: value.getallItenList()[index].amount,
+                      dateTime: value.getallItenList()[index].dateTime),
+                ),
+              ],
+            ));
       },
     );
   }
